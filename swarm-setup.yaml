@@ -1,0 +1,93 @@
+services:
+
+  vote:
+    image: vote_app  # L'image doit être buildée et poussée sur un registre avant le déploiement
+    build: ./vote
+    ports:
+      - "8080:8080"
+    networks:
+      - front
+      - back
+    deploy:
+      replicas: 2  # Deux instances du service pour assurer la haute disponibilité
+      restart_policy:
+        condition: on-failure  # Redémarre en cas d'échec
+      placement:
+        constraints:
+          - "node.role == worker"  # Place ce service sur les nœuds worker
+
+  worker:
+    image: worker_app
+    build: ./worker
+    networks:
+      - back
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - "node.role == worker"
+
+  result:
+    image: result_app
+    build: ./result
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./result/.env
+    networks:
+      - front
+      - back
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - "node.role == worker"
+
+  redis:
+    image: redis:alpine
+    networks:
+      - back
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      mode: global  # Un conteneur Redis sur chaque nœud
+      restart_policy:
+        condition: on-failure
+
+  db:
+    image: postgres:17
+    env_file:
+      - .env
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - back
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB} || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      placement:
+        constraints:
+          - "node.role == manager"  # Assigne la base de données au manager
+      restart_policy:
+        condition: on-failure
+
+networks:
+  front:
+    driver: overlay  # Réseau Swarm en overlay
+  back:
+    driver: overlay
+
+volumes:
+  db-data:
+    driver: local  # Volume persistant sur le cluster
