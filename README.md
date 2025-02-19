@@ -1,4 +1,4 @@
-# Document de Soutenance : Modernisation et Déploiement avec Docker Swarm
+# Modernisation voting-app
 
 ## 1. Introduction
 
