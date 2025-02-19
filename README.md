@@ -52,7 +52,7 @@ POSTGRES_PASSWORD=db_password
 POSTGRES_DB=votes
 ```
 
-3. **Créer un fichier `.env` dans le dossier result** en remplissant les variables nécessaires.
+3. **Créer un fichier `.env` dans le dossier `result`** en remplissant les variables nécessaires.
 
 ```
 DB_HOST=db
