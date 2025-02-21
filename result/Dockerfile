@@ -13,7 +13,7 @@ RUN npm install --omit=dev
 COPY . .
 
 # Exposition du port
-EXPOSE 3000
+EXPOSE 8888
 
 # Commande de lancement
 CMD ["node", "server.js"]

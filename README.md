@@ -65,12 +65,12 @@ DB_NAME=votes
 4. **Construire et lancer les services avec Docker Compose**
 
    ```bash
-   docker-compose up -d
+   docker compose up -d
    ```
 
 5. **Accéder à l’application** :
    - Interface de vote : `http://localhost:8080`
-   - Interface de résultats : `http://localhost:3000`
+   - Interface de résultats : `http://localhost:8888`
 
 ## 5. Mise en Place d’un Cluster Docker Swarm
 

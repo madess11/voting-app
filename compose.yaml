@@ -28,7 +28,7 @@ services:
   result:
     build: ./result
     ports:
-      - "3000:3000"
+      - "8888:8888"
     env_file:
       - ./result/.env
     networks:

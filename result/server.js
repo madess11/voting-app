@@ -14,7 +14,7 @@ let express = require("express")
 
 io.set("transports", ["polling"])
 
-const port = 3000
+const port = 8888
 
 io.sockets.on("connection", function (socket) {
 
